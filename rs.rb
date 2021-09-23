@@ -3,11 +3,12 @@ require 'yaml'
 require 'json'
 
 spacing = (2 ** (Z_ONE_METER - ENV['Z'].to_i)).to_f
+basename = ENV['BASENAME']
 
 pipeline = <<-EOS
 pipeline: 
   - 
-    filename: src/08OE4959.las
+    filename: #{SRC_DIR}/#{basename}.las
     type: readers.las
     spatialreference: "EPSG:6676"
   -

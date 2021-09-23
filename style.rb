@@ -29,9 +29,10 @@ layers:
       fill-extrusion-base: 
         - get
         - h
-      fill-extrusion-color:
-        - get
-        - color
+      fill-extrusion-color: "#ccc"
+#      fill-extrusion-color:
+#        - get
+#        - color
       fill-extrusion-height: 
         - '+'
         -

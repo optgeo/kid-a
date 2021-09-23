@@ -9,12 +9,13 @@ SRC_FILES = %w{
 }
 
 SRC_DIR = 'src'
+LOT_DIR = 'lot'
 MBTILES_PATH = 'tiles.mbtiles'
 
 Z_ONE_METER = 17
 
-MINZOOM = 5
-MAXZOOM = 18
+MINZOOM = 8
+MAXZOOM = 15 #18
 LAYER_NAME = 'voxel'
 
 STYLE_YAML_PATH = 'style.yaml'
