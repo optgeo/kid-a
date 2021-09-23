@@ -3,7 +3,7 @@ require 'yaml'
 require 'json'
 Z = ENV['Z'].to_i
 spacing = (2 ** (Z_ONE_METER - Z)).to_f
-$stderr.print "Creating GeoJSONSeq for z=#{Z}.\n"
+#$stderr.print "Creating GeoJSONSeq for z=#{Z}.\n"
 start_time = Time.now
 n = 0
 

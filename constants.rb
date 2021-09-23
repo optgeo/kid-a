@@ -1,5 +1,9 @@
 JOBS = 2
+DELAY = 60
 CONTINUE = true
+
+DIGEST_FILTER = false
+DIGEST_KEY = '6'
 
 URLS_PATH = 'urls.txt'
 SRC_DIR = 'src'
@@ -13,5 +17,5 @@ MAXZOOM = 15 #18
 LAYER_NAME = 'voxel'
 
 STYLE_YAML_PATH = 'style.yaml'
-BASE_URL = 'http://m343:9966/zxy'
+BASE_URL = 'https://x.optgeo.org/kid-a/zxy'
 

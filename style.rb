@@ -19,7 +19,7 @@ layers:
     id: background
     type: background
     paint:
-      background-color: rgb(20, 20, 20)
+      background-color: rgb(40, 40, 40)
   -
     id: voxel
     type: fill-extrusion

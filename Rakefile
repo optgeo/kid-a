@@ -1,4 +1,5 @@
 require './constants'
+require 'digest/md5'
 
 desc 'download src files'
 task :download do
@@ -13,6 +14,9 @@ task :tiles do
   Dir.glob("#{SRC_DIR}/*.las").sort.each {|path|
     basename = File.basename(path, '.las')
     mbtiles_path = "#{LOT_DIR}/#{basename}.mbtiles"
+    if DIGEST_FILTER && !Digest::MD5.hexdigest(mbtiles_path)[-1] == DIGEST_KEY
+      next
+    end
     if CONTINUE and
       File.exist?(mbtiles_path) and 
       !File.exist?("#{mbtiles_path}-journal")
@@ -20,8 +24,8 @@ task :tiles do
         next
     end
     sh <<-EOS
-seq #{MINZOOM} #{MAXZOOM} | 
-parallel --jobs=#{JOBS} --line-buffer '\
+seq #{MINZOOM} #{MAXZOOM} | \
+parallel --jobs=#{JOBS} --line-buffer --delay=#{DELAY} '\
 Z={} BASENAME=#{basename} ruby rs.rb | \
 pdal pipeline --stdin | \
 Z={} ruby togeojson.rb' | \
