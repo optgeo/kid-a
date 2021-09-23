@@ -3,15 +3,22 @@ require './constants'
 desc 'download src files'
 task :download do
   sh <<-EOS
-parallel --line-buffer -j 2 ruby dl.rb ::: #{SRC_FILES.join(' ')}
+cat urls.txt | sort | \
+parallel --line-buffer -j 2 URL={} ruby dl.rb
   EOS
 end
 
 desc 'produce tiles'
 task :tiles do
-  Dir.glob("#{SRC_DIR}/*.las") {|path|
+  Dir.glob("#{SRC_DIR}/*.las").sort.each {|path|
     basename = File.basename(path, '.las')
-    output = "--output=#{LOT_DIR}/#{basename}.mbtiles"
+    mbtiles_path = "#{LOT_DIR}/#{basename}.mbtiles"
+    if CONTINUE and
+      File.exist?(mbtiles_path) and 
+      !File.exist?("#{mbtiles_path}-journal")
+        print "skip #{mbtiles_path}.\n"
+        next
+    end
     sh <<-EOS
 seq #{MINZOOM} #{MAXZOOM} | 
 parallel --jobs=#{JOBS} --line-buffer '\
@@ -20,7 +27,7 @@ pdal pipeline --stdin | \
 Z={} ruby togeojson.rb' | \
 tippecanoe --minimum-zoom=#{MINZOOM} \
 --maximum-zoom=#{MAXZOOM} --force \
-#{output} \
+--output=#{mbtiles_path} \
 --no-tile-size-limit \
 --no-feature-limit \
 --projection=EPSG:3857

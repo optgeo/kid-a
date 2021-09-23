@@ -20,7 +20,8 @@ while gets
   y = r[1].to_f - r[1].to_f % spacing
   h = r[2].to_f - r[2].to_f % spacing
   h = h.to_i
-  color = '#' + r[13..15].map{|v| sprintf('%02x', v.to_f / 256)}.join
+#  color = '#' + r[13..15].map{|v| sprintf('%02x', v.to_f / 256)}.join
+  color = '#' + r[13..15].map{|v| sprintf('%01x', (v.to_f / 4096).round)}.join
   g = <<-EOS
 type: Polygon
 coordinates: 
@@ -45,7 +46,7 @@ coordinates:
   f = <<-EOS
 type: Feature
 properties: 
-#  color: '#{color}'
+  color: '#{color}'
   classification: #{r[8].to_i}
 #  height: #{r[2].to_f}
   h: #{h}

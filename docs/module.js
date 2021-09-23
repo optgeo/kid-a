@@ -46,18 +46,23 @@ const showMap = async (texts) => {
   }
 
   const legend = {
-    1: 'water',
-    2: 'urban',
-    3: 'rice paddy',
-    4: 'crop',
-    5: 'grassland',
-    6: 'deciduous broad-leaved forest, or DBF',
-    7: 'deciduous needle-leaved forest, or DNF',
-    8: 'evergreen broad-leaved forest, or EBF',
-    9: 'evergreen needle-leaved forest, or ENF',
-    10: 'bare land',
-    11: 'bamboo',
-    12: 'solar panel'
+    0: 'created, never classified',
+    1: 'unclassified',
+    2: 'ground',
+    3: 'low vegetation',
+    4: 'medium vegetation',
+    5: 'high vegetation',
+    6: 'building',
+    7: 'low point, or low noise',
+    8: 'high point, typically high noise',
+    9: 'water',
+    10: 'rail',
+    11: 'road surface',
+    12: 'bridge deck',
+    13: 'wire, guard',
+    14: 'wire, conductor',
+    15: 'transmission tower',
+    16: 'wire-structure connector, such as insulator'
   }
 
   map.on('load', () => {
@@ -65,6 +70,7 @@ const showMap = async (texts) => {
       let u = new SpeechSynthesisUtterance()
       u.lang = 'en-GB'
       u.text = legend[e.features[0].properties.classification]
+      if (!u.text) u.text = 'reserved or user definable.'
       if (voice) u.voice = voice
       speechSynthesis.cancel()
       speechSynthesis.speak(u)
