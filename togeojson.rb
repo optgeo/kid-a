@@ -61,4 +61,4 @@ tippecanoe:
   print JSON.dump(f), "\n"
 end
 
-$stderr.print "z=#{Z}: #{n} voxels, #{Time.now - start_time}s.\n"
+$stderr.print "z=#{Z}: #{n} voxels, #{(Time.now - start_time).round}s.\n"

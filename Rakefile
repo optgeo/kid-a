@@ -1,17 +1,30 @@
 require './constants'
 require 'digest/md5'
+require 'slack-notifier'
+
+$notifier = Slack::Notifier.new WEBHOOK_URL if SLACK
+
+desc 'install required libraries'
+task :install do
+  sh "sudo gem install slack-notifier"
+end
 
 desc 'download src files'
 task :download do
   sh <<-EOS
 cat urls.txt | sort | \
-parallel --line-buffer -j 2 URL={} ruby dl.rb
+parallel --line-buffer -j #{DOWNLOAD_JOBS} URL={} ruby dl.rb
   EOS
 end
 
 desc 'produce tiles'
 task :tiles do
+  $notifier.ping "[#{pomocode}] tiles task started." if SLACK
   Dir.glob("#{SRC_DIR}/*.las").sort.each {|path|
+    if true && File.size(path) > 1000000000 * 0.6
+      print "skip #{path}.\n"
+      next
+    end
     basename = File.basename(path, '.las')
     mbtiles_path = "#{LOT_DIR}/#{basename}.mbtiles"
     if DIGEST_FILTER && !Digest::MD5.hexdigest(mbtiles_path)[-1] == DIGEST_KEY
@@ -36,7 +49,9 @@ tippecanoe --minimum-zoom=#{MINZOOM} \
 --no-feature-limit \
 --projection=EPSG:3857
     EOS
+    $notifier.ping "[#{pomocode}] finished #{basename}." if SLACK
   }
+  $notifier.ping "[#{pomocode}] tiles task complete!" if SLACK
 end
 
 desc 'generate style'
@@ -71,5 +86,30 @@ end
 desc 'run vt-optimizer'
 task :optimize do
   sh "node ~/vt-optimizer/index.js -m #{MBTILES_PATH}"
+end
+
+desc 'check zoom levels inside mbtiles'
+task :_zoom_levels do
+  SQL = 'select distinct zoom_level from tiles'
+  Dir.glob("#{LOT_DIR}/*.mbtiles") {|path|
+    next if File.exist?("#{path}-journal")
+    sh <<-EOS
+sqlite3 #{path} '#{SQL}' 2>&1
+    EOS
+  }
+end
+
+desc 'delete processed las files to save disk'
+task :_delete_processed_las_files do
+  Dir.glob("#{SRC_DIR}/*.las").sort.each {|las_path|
+    basename = File.basename(las_path, '.las')
+    mbtiles_path = "#{LOT_DIR}/#{basename}.mbtiles"
+    if File.exist?(mbtiles_path) && !File.exist?("#{mbtiles_path}-journal")
+      print "delete #{las_path} because #{mbtiles_path} exists.\n"
+      sh "rm #{las_path}" unless ENV['DRY_RUN']
+    else
+      print "keep #{las_path} because #{mbtiles_path} is to go.\n"
+    end
+  }
 end
 
