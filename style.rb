@@ -11,11 +11,6 @@ center:
 zoom: 17
 layers:
   -
-    id: sky
-    type: sky
-    paint:
-      sky-type: atmosphere
-  -
     id: background
     type: background
     paint:
@@ -29,16 +24,6 @@ layers:
       fill-extrusion-base: 
         - get
         - h
-#      fill-extrusion-color: 
-#        - match
-#        -
-#          - get
-#          - classification
-#        - 1
-#        - "rgb(40, 40, 40)"
-#        - 2
-#        - "rgb(200, 200, 200)"
-#        - "rgb(0, 255, 255)"
       fill-extrusion-color:
         - get
         - color

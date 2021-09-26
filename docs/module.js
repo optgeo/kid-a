@@ -13,8 +13,8 @@ const script = src => {
 
 const init = () => {
   style('style.css')
-  style('https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css')
-  script('https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js')
+  style('maplibre-gl.css')
+  script('maplibre-gl.js')
   const map = document.createElement('div')
   map.id = 'map'
   document.body.appendChild(map)
@@ -22,16 +22,14 @@ const init = () => {
 init()
 
 const showMap = async (texts) => {
-  mapboxgl.accessToken = 
-    'pk.eyJ1IjoiaGZ1IiwiYSI6ImlRSGJVUTAifQ.rTx380smyvPc1gUfZv1cmw'
-  const map = new mapboxgl.Map({
+  const map = new maplibregl.Map({
     container: 'map',
     hash: true,
     style: 'style.json',
     maxZoom: 17.8
   })
-  map.addControl(new mapboxgl.NavigationControl())
-  map.addControl(new mapboxgl.ScaleControl({
+  map.addControl(new maplibregl.NavigationControl())
+  map.addControl(new maplibregl.ScaleControl({
     maxWidth: 200, unit: 'metric'
   }))
 
@@ -80,7 +78,7 @@ const showMap = async (texts) => {
 }
 
 const main = async () => {
-  if (typeof mapboxgl == 'undefined') {
+  if (typeof maplibregl == 'undefined') {
     window.onload = () => {
       showMap()
     }

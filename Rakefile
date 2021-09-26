@@ -1,8 +1,12 @@
 require './constants'
 require 'digest/md5'
-require 'slack-notifier'
+require 'slack-notifier' if SLACK
 
 $notifier = Slack::Notifier.new WEBHOOK_URL if SLACK
+
+def hostname
+  `hostname`.strip
+end
 
 desc 'install required libraries'
 task :install do
@@ -12,20 +16,21 @@ end
 desc 'download src files'
 task :download do
   sh <<-EOS
-cat urls.txt | sort | \
+cat #{URLS_PATH} | sort | \
 parallel --line-buffer -j #{DOWNLOAD_JOBS} URL={} ruby dl.rb
   EOS
 end
 
 desc 'produce tiles'
 task :tiles do
-  $notifier.ping "[#{pomocode}] tiles task started." if SLACK
+  $notifier.ping "[#{pomocode}] tiles task started@#{hostname}." if SLACK
   Dir.glob("#{SRC_DIR}/*.las").sort.each {|path|
-    if true && File.size(path) > 1000000000 * 0.6
+    if false && File.size(path) < 1000000000 * 0.8
       print "skip #{path}.\n"
       next
     end
     basename = File.basename(path, '.las')
+    next unless FILTERS[hostname].match basename
     mbtiles_path = "#{LOT_DIR}/#{basename}.mbtiles"
     if DIGEST_FILTER && !Digest::MD5.hexdigest(mbtiles_path)[-1] == DIGEST_KEY
       next
@@ -49,9 +54,9 @@ tippecanoe --minimum-zoom=#{MINZOOM} \
 --no-feature-limit \
 --projection=EPSG:3857
     EOS
-    $notifier.ping "[#{pomocode}] finished #{basename}." if SLACK
+    $notifier.ping "[#{pomocode}] finished #{basename}@#{hostname}." if SLACK
   }
-  $notifier.ping "[#{pomocode}] tiles task complete!" if SLACK
+  $notifier.ping "[#{pomocode}] tiles task@#{hostname} complete!" if SLACK
 end
 
 desc 'generate style'
