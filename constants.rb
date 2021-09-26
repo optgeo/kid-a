@@ -4,16 +4,13 @@ CONTINUE = true
 
 DOWNLOAD_JOBS = 1
 
-DIGEST_FILTER = false
-DIGEST_KEY = '6'
-
 FILTERS = {
-  'm354' => /^08N/,
-  'm321' => /^08NF229/,
-  'm343' => /^08OE4/
+  'm321' => /^08NF221/,
+  'm343' => /^08NF222/,
+  'm354' => /^08NF223/
 }
 
-URLS_PATH = 'urls-atami.txt'
+URLS_PATH = 'urls-shimoda.txt'
 SRC_DIR = 'src'
 LOT_DIR = 'lot'
 MBTILES_PATH = 'tiles.mbtiles'
@@ -30,7 +27,11 @@ BASE_URL = 'https://x.optgeo.org/kid-a/zxy'
 SLACK = true
 WEBHOOK_URL = ENV['WEBHOOK_URL']
 
+def hostname
+  `hostname`.strip
+end
+
 def pomocode
-  Time.now.to_i / 1800
+  "[#{Time.now.to_i / 1800}@#{hostname}]"
 end
 

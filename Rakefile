@@ -2,10 +2,8 @@ require './constants'
 require 'digest/md5'
 require 'slack-notifier' if SLACK
 
-$notifier = Slack::Notifier.new WEBHOOK_URL if SLACK
-
-def hostname
-  `hostname`.strip
+if SLACK
+  $notifier = Slack::Notifier.new WEBHOOK_URL
 end
 
 desc 'install required ruby libraries'
@@ -35,18 +33,11 @@ end
 
 desc 'produce tiles'
 task :tiles do
-  $notifier.ping "[#{pomocode}] tiles task started@#{hostname}." if SLACK
+  $notifier.ping "#{pomocode} 🐧 started." if SLACK
   Dir.glob("#{SRC_DIR}/*.las").sort.each {|path|
-    if false && File.size(path) < 1000000000 * 0.8
-      print "skip #{path}.\n"
-      next
-    end
     basename = File.basename(path, '.las')
     next unless FILTERS[hostname].match basename
     mbtiles_path = "#{LOT_DIR}/#{basename}.mbtiles"
-    if DIGEST_FILTER && !Digest::MD5.hexdigest(mbtiles_path)[-1] == DIGEST_KEY
-      next
-    end
     if CONTINUE and
       File.exist?(mbtiles_path) and 
       !File.exist?("#{mbtiles_path}-journal")
@@ -66,9 +57,9 @@ tippecanoe --minimum-zoom=#{MINZOOM} \
 --no-feature-limit \
 --projection=EPSG:3857
     EOS
-    $notifier.ping "[#{pomocode}] finished #{basename}@#{hostname}." if SLACK
+    $notifier.ping "#{pomocode} #{basename} 👍" if SLACK
   }
-  $notifier.ping "[#{pomocode}] tiles task@#{hostname} complete!" if SLACK
+  $notifier.ping "#{pomocode} complete ✨" if SLACK
 end
 
 desc 'generate style'
@@ -127,6 +118,19 @@ task :_delete_processed_las_files do
     else
       print "keep #{las_path} because #{mbtiles_path} is to go.\n"
     end
+  }
+end
+
+desc 'list files to go'
+task :_togo do
+  mbtiles = Dir.glob("#{LOT_DIR}/*.mbtiles").map {|path|
+    File.basename(path, '.mbtiles')
+  }
+  las = Dir.glob("#{SRC_DIR}/*.las").map {|path|
+    File.basename(path, '.las')
+  }
+  (las - mbtiles).sort.each {|basename|
+    print "#{basename}\n"
   }
 end
 
