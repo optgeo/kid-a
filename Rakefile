@@ -8,9 +8,21 @@ def hostname
   `hostname`.strip
 end
 
-desc 'install required libraries'
+desc 'install required ruby libraries'
 task :install do
   sh "sudo gem install slack-notifier"
+end
+
+desc 'download maplibre-gl files'
+task :maplibre do
+  %w{
+https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css
+https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js
+  }.each {|url|
+    sh <<-EOS
+curl -o docs/#{url.split('/')[-1]} #{url}
+    EOS
+  }
 end
 
 desc 'download src files'

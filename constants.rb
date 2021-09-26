@@ -9,8 +9,8 @@ DIGEST_KEY = '6'
 
 FILTERS = {
   'm354' => /^08N/,
-  'm321' => /^08OE8/,
-  'm434' => /^08OE4/
+  'm321' => /^08NF229/,
+  'm343' => /^08OE4/
 }
 
 URLS_PATH = 'urls-atami.txt'
