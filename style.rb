@@ -2,7 +2,7 @@ require './constants'
 require 'yaml'
 require 'json'
 
-print JSON.dump(YAML.load(
+print JSON.pretty_generate(YAML.load(
 <<EOS
 version: 8
 center:

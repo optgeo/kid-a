@@ -16,6 +16,7 @@ task :maplibre do
   %w{
 https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.css
 https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js
+https://unpkg.com/maplibre-gl@1.15.2/dist/maplibre-gl.js.map
   }.each {|url|
     sh <<-EOS
 curl -o docs/#{url.split('/')[-1]} #{url}
@@ -74,15 +75,25 @@ end
 
 desc 'deploy tiles'
 task :deploy do
-  files = Dir.glob("#{LOT_DIR}/*.mbtiles").select {|path|
-    not File.exists?("#{path}-journal")
+  sh "rm #{DIV_DIR}/*.mbtiles"
+  N_DIV.times {|div|
+    files = Dir.glob("#{LOT_DIR}/*.mbtiles").select {|path|
+      !File.exists?("#{path}-journal") &&
+      File.basename(path, '.mbtiles')[-4..-1].to_i % N_DIV == div
+    }
+    raise "you have no lot files ready." if files.empty?
+    sh <<-EOS
+tile-join --force --output=#{DIV_DIR}/#{div}.mbtiles \
+--no-tile-size-limit \
+--minimum-zoom=#{MINZOOM} --maximum-zoom=#{MAXZOOM} \
+#{files.join(' ')}
+    EOS
   }
-  raise "you have no lot files ready." if files.empty?
-  sh <<-EOS
+  sh <<-EOS    
 tile-join --force --output=#{MBTILES_PATH} \
 --no-tile-size-limit \
 --minimum-zoom=#{MINZOOM} --maximum-zoom=#{MAXZOOM} \
-#{files.join(' ')}; \
+#{DIV_DIR}/*.mbtiles; \
 tile-join --force --output-to-directory=docs/zxy \
 --no-tile-size-limit \
 --no-tile-compression \

@@ -5,20 +5,22 @@ CONTINUE = true
 DOWNLOAD_JOBS = 1
 
 FILTERS = {
-  'm321' => /^08NF221/,
-  'm343' => /^08NF222/,
-  'm354' => /^08NF223/
+  'm321' => /(0|3|6)$/,
+  'm343' => /(1|4|7)$/,
+  'm354' => /(2|5|8|9)$/
 }
 
-URLS_PATH = 'urls-shimoda.txt'
+URLS_PATH = 'urls.txt'
 SRC_DIR = 'src'
 LOT_DIR = 'lot'
+DIV_DIR = 'div'
+N_DIV = 6
 MBTILES_PATH = 'tiles.mbtiles'
 
 Z_ONE_METER = 17
 
 MINZOOM = 10 #8
-MAXZOOM = 15 #18
+MAXZOOM = 14 #15 #18
 LAYER_NAME = 'voxel'
 
 STYLE_YAML_PATH = 'style.yaml'
