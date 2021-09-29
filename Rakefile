@@ -145,3 +145,14 @@ task :_togo do
   }
 end
 
+desc 'check number of source files'
+task :_source_check do
+  count = 0
+  10.times {|i|
+    c = Dir.glob("#{SRC_DIR}/*#{i}.las").count
+    print "#{i}: #{c}\n"
+    count += c
+  }
+  print "all: #{count}\n"
+end
+

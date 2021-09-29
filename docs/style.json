@@ -45,7 +45,7 @@
     "voxel": {
       "type": "vector",
       "attribution": "出典:静岡県ポイントクラウドデータベース",
-      "minzoom": 10,
+      "minzoom": 8,
       "maxzoom": 14,
       "tiles": [
         "https://x.optgeo.org/kid-a/zxy/{z}/{x}/{y}.pbf"

@@ -5,21 +5,21 @@ CONTINUE = true
 DOWNLOAD_JOBS = 1
 
 FILTERS = {
-  'm321' => /(0|3|6)$/,
-  'm343' => /(1|4|7)$/,
-  'm354' => /(2|5|8|9)$/
+  'm321' => /(0|3)$/,
+  'm343' => /(1|4|7|9)$/,
+  'm354' => /(2|5|6|8)$/
 }
 
 URLS_PATH = 'urls.txt'
 SRC_DIR = 'src'
 LOT_DIR = 'lot'
 DIV_DIR = 'div'
-N_DIV = 6
+N_DIV = 12
 MBTILES_PATH = 'tiles.mbtiles'
 
 Z_ONE_METER = 17
 
-MINZOOM = 10 #8
+MINZOOM = 8 # 10 #8
 MAXZOOM = 14 #15 #18
 LAYER_NAME = 'voxel'
 
