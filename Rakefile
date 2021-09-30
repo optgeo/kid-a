@@ -132,6 +132,15 @@ task :_delete_processed_las_files do
   }
 end
 
+desc 'automatic'
+task :automatic do
+  100.times {|i|
+    sh "sleep 600"
+    sh "rake _delete_processed_las_files"
+    sh "rake tiles"
+  }
+end
+
 desc 'list files to go'
 task :_togo do
   mbtiles = Dir.glob("#{LOT_DIR}/*.mbtiles").map {|path|

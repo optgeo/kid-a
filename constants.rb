@@ -10,11 +10,11 @@ FILTERS = {
   'm354' => /(2|5|6|8)$/
 }
 
-URLS_PATH = 'urls.txt'
+URLS_PATH = 'urls-middle.txt'
 SRC_DIR = 'src'
 LOT_DIR = 'lot'
 DIV_DIR = 'div'
-N_DIV = 12
+N_DIV = 16
 MBTILES_PATH = 'tiles.mbtiles'
 
 Z_ONE_METER = 17
